@@ -19,7 +19,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
-class user_account(SQLModel, table=True):
+class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(index=True)
     email: str = Field(index=True)
@@ -49,6 +49,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.post("/create-account/")
 def Account_Creation(user: User, session: SessionDep) -> User:
-    new_name = input()
-    new_passwd = input()
-    return
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
