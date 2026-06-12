@@ -14,5 +14,19 @@
 #   1. Users can like posts
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
+from fastapi import FastAPI, Depends, HTTPException, Query
+from sqlmodel import SQLModel, Field, Session, create_engine, select
 
+class user_account(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    email: str = Field(index=True)
+    passwd: str
 
+app = FastAPI()
+
+@app.post("/create-account/")
+async def Account_Creation():
+    new_name = input()
+    new_passwd = input()
+    return
