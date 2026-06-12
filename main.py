@@ -14,6 +14,7 @@
 #   1. Users can like posts
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
+from typing import Annotated
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
@@ -29,10 +30,14 @@ postgres_url = f"postgres:///{postgres_file_name}"
 connect_args = {"check_same_thread": False}
 engine = create_engine(postgres_url, connect_args=connect_args)
 
-app = FastAPI()
-
-def create_db_and_tables():
+def create_db_and_table():
     SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+app = FastAPI()
 
 @app.post("/create-account/")
 def Account_Creation():
