@@ -15,6 +15,7 @@
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
 from typing import Annotated
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
@@ -37,7 +38,14 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-app = FastAPI()
+SessionDep - Annotated[Session, Depends(get_session)]
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_table()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 @app.post("/create-account/")
 def Account_Creation():
