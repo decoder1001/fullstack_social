@@ -21,12 +21,18 @@ class user_account(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(index=True)
     email: str = Field(index=True)
-    passwd: str
+    passwd: str = Field(index=True)
+
+postgres_file_name = "database.db"
+postgres_url = f"postgres:///{postgres_file_name}"
+
+connect_args = {"check_same_thread": False}
+engine = create_engine(postgres_url, connect_args=connect_args)
 
 app = FastAPI()
 
 @app.post("/create-account/")
-async def Account_Creation():
+def Account_Creation():
     new_name = input()
     new_passwd = input()
     return
