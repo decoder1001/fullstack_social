@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/create-account/")
-def Account_Creation():
+def Account_Creation(user: User, session: SessionDep) -> User:
     new_name = input()
     new_passwd = input()
     return
