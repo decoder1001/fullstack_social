@@ -31,6 +31,9 @@ engine = create_engine(postgres_url, connect_args=connect_args)
 
 app = FastAPI()
 
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
 @app.post("/create-account/")
 def Account_Creation():
     new_name = input()
