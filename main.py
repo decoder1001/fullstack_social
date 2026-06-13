@@ -18,6 +18,9 @@ from typing import Annotated
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlmodel import SQLModel, Field, Session, create_engine, select
+from dotenv import load_dotenv
+import psycopg
+import os
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
