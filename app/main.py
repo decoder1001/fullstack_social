@@ -15,7 +15,7 @@
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from app.core.database import engine, Base
 from app.api.endpoints import users
 
@@ -23,8 +23,11 @@ from app.api.endpoints import users
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    yield
 
-app = FastAPI(title="FullStack_Social", lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title="FullStack_Social")
+
+app.include_router(users.router, prefix="/users", tags=["users"])
 
 @app.get("/")
 async def root():
