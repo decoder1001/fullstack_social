@@ -5,6 +5,12 @@ class UserBase(BaseModel):
     first_name: str | None = None
     surname: str | None = None
 
+class PostBase(BaseModel):
+    content: str
+
+    class Config:
+        orm_mode = True
+
 class UserCreate(UserBase):
     pass
 
@@ -13,3 +19,7 @@ class UserRead(UserBase):
 
     class Config:
         from_attributes = True
+
+class CreatePost(PostBase):
+    class Config:
+        orm_mode = True

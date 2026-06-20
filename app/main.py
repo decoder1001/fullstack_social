@@ -32,3 +32,7 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 @app.get("/")
 async def root():
     return {"message": "FastAPI + PostgreSQL are running!"}
+
+#@app.post("/signup")
+#async def signup():
+#   return 
