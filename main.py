@@ -1,6 +1,5 @@
 #TODO:
 # User account creation and authentication
-#   1. Account creation
 #   2. Account authentication
 #   3. Account Dashboard (Show previous posts)
 #   4. Friend request other users
