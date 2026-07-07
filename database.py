@@ -1,23 +1,13 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
-from app.core.config import settings
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+#from config import settings
 
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=True,
-    pool_pre_ping=True,
-)
+DATABASE_URL: str = "postgresql://ross:Badonkadonk56@localhost:5432/socialdb"
+PROJECT_NAME: str = "Fullstack_Social"
 
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    expire_on_commit=False,
-    autoflush=False,
-    autocommit=False,
-)
+engine = create_engine(DATABASE_URL)
 
-class Base(DeclarativeBase):
-    pass
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+Base = declarative_base()
