@@ -47,3 +47,10 @@ async def signup(user: UserBase, db: db_dependency):
     db.add(db_userinfo)
     db.commit()
     db.refresh(db_userinfo)
+
+@app.get("/user/{user_id}")
+async def get_user(user_id: int, db: db_dependency):
+    result = db.query(models.User).filter(models.User.id == user_id).first()
+    if not result:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return result
