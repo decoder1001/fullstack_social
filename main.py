@@ -15,6 +15,7 @@
 #       2.2. Comment Timestamps
 from typing import Annotated, List
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
@@ -27,6 +28,7 @@ class UserBase(BaseModel):
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def get_db():
     db = SessionLocal()
@@ -47,6 +49,10 @@ async def signup(user: UserBase, db: db_dependency):
     db.add(db_userinfo)
     db.commit()
     db.refresh(db_userinfo)
+
+@app.post("/login")
+async def login(user: UserBase, db: db_dependency, token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token} 
 
 @app.get("/user/{user_id}")
 async def get_user(user_id: int, db: db_dependency):
