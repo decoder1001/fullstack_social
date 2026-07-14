@@ -50,3 +50,15 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     )
     db.add(create_user_model)
     db.commit()
+
+def authenticate_user(username: str, password: str, db)
+    """
+    Verifies the username and password against stored hashed password.
+    Returns the user if authentication is successful, otherwise returns False.
+    """
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        return False
+    if not bcrypt_context.verify(password, user.hashed_password):
+        return False
+    return user
