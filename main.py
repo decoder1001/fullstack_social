@@ -15,7 +15,7 @@
 #       2.2. Comment Timestamps
 from typing import Annotated, List
 from fastapi import FastAPI, HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
@@ -60,7 +60,7 @@ async def signup(user: UserBase, db: db_dependency):
     db.refresh(db_userinfo)
 
 @app.post("/login")
-async def login(user: UserBase, db: db_dependency, token: Annotated[str, Depends(oauth2_scheme)]):
+async def login(user: UserBase, db: db_dependency, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     return {"token": token} 
 
 @app.get("/user/{user_id}") # FIX: Need to login to be authorized, must be authorized to login.
