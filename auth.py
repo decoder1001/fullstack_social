@@ -16,3 +16,24 @@ from models import User
 router = APIRouter(prefix="/auth", tags=["auth"])
 SECRET_KEY = "5ed825e17bd774e1a962b0d354a75e4df14509016486656649bd7e94ba1ca3d6"
 ALGORITHM = "HS256"
+
+bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+class CreateUserRequest(BaseModel):
+    username: str
+    email: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+db_dependency = Annotated[Session, Depends(get_db)]
