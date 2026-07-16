@@ -57,10 +57,8 @@ async def root():
 
 @app.post("/signup")
 async def signup(user: UserBase, db: db_dependency):
-    db_userinfo = models.User(username=user.username, email=user.email, password_hash=user.password_hash)
-    db.add(db_userinfo)
-    db.commit()
-    db.refresh(db_userinfo)
+    create_user()
+    
 
 @app.get("/login", status_code=status.HTTP_200_OK)
 async def login(user: user_dependency, db_dependency):

@@ -43,10 +43,10 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     """
     Creates a new user with a hashed password and stores it in the database
     """
-    create_user_model = Users(
+    create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,
-        hashed_password=bcrypt_context.hash(create_user_request.password)
+        password_hash=bcrypt_context.hash(create_user_request.password)
     )
     db.add(create_user_model)
     db.commit()
@@ -59,7 +59,7 @@ def authenticate_user(username: str, password: str, db):
     user = db.query(User).filter(User.username == username).first()
     if not user:
         return False
-    if not bcrypt_context.verify(password, user.hashed_password):
+    if not bcrypt_context.verify(password, user.password_hash):
         return False
     return user
 
