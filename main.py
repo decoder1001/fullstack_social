@@ -41,37 +41,6 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
-def fake_decode_token(token):
-    return UserBase(
-            username=token + "fakedecoded", email="john@example.com", password_hash='fake543'
-    )
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    user = fake_decode_token(token)
-    return user
-
 @app.get("/")
 async def root():
     return {"message": "FastAPI + PostgreSQL are running!"}
-
-@app.post("/signup")
-async def signup(user: UserBase, db: db_dependency):
-    create_user()
-    
-
-@app.get("/login", status_code=status.HTTP_200_OK)
-async def login(user: user_dependency, db_dependency):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
-    return {"User": user} 
-
-@app.get("/user/{user_id}") # FIX: Need to login to be authorized, must be authorized to login.
-async def get_user(user_id: int, db: db_dependency):
-    result = db.query(models.User).filter(models.User.id == user_id).first()
-    if not result:
-        raise HTTPException(status_code=404, detail="User not found.")
-    return result
-
-@app.get("/users/me")
-async def read_users_me(current_user: Annotated[UserBase, Depends(get_current_user)], db: db_dependency):
-    return current_user
