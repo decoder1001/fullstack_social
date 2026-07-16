@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPExeception
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWError, jwt
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -39,7 +39,7 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
+async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     """
     Creates a new user with a hashed password and stores it in the database
     """
@@ -51,7 +51,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     db.add(create_user_model)
     db.commit()
 
-def authenticate_user(username: str, password: str, db)
+def authenticate_user(username: str, password: str, db):
     """
     Verifies the username and password against stored hashed password.
     Returns the user if authentication is successful, otherwise returns False.

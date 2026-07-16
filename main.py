@@ -14,12 +14,13 @@
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
 from typing import Annotated, List
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
 from database import engine, SessionLocal
+from auth import get_current_user, router, create_user
 
 class UserBase(BaseModel):
     username: str
@@ -28,6 +29,7 @@ class UserBase(BaseModel):
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+app.include_router(router)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def get_db():
@@ -38,6 +40,7 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 def fake_decode_token(token):
     return UserBase(
@@ -59,9 +62,11 @@ async def signup(user: UserBase, db: db_dependency):
     db.commit()
     db.refresh(db_userinfo)
 
-@app.post("/login")
-async def login(user: UserBase, db: db_dependency, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    return {"token": token} 
+@app.get("/login", status_code=status.HTTP_200_OK)
+async def login(user: user_dependency, db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    return {"User": user} 
 
 @app.get("/user/{user_id}") # FIX: Need to login to be authorized, must be authorized to login.
 async def get_user(user_id: int, db: db_dependency):
