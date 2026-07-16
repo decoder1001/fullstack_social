@@ -19,7 +19,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
 from database import engine, SessionLocal
-from auth import get_current_user, router, create_user
+from auth import get_current_user, router
 
 class UserBase(BaseModel):
     username: str
@@ -29,7 +29,6 @@ class UserBase(BaseModel):
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 app.include_router(router)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def get_db():
     db = SessionLocal()
