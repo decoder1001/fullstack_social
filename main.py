@@ -13,8 +13,11 @@
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
 from typing import Annotated, List
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
@@ -29,6 +32,9 @@ class UserBase(BaseModel):
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 app.include_router(router)
+app.mount ("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="templates")
 
 def get_db():
     db = SessionLocal()
