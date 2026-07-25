@@ -46,9 +46,9 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
-@app.get("/", respons_class=HTMLResponse)
-async def root(request: Request, id: str):
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
     return templates.TemplateResponse(
-        request=request, name="item.html", context={"id": id}
+        request=request, name="home.html"
     )
     #return {"message": "FastAPI + PostgreSQL are running!"}
