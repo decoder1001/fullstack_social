@@ -13,7 +13,7 @@
 #   2. Users can comment on posts
 #       2.2. Comment Timestamps
 from typing import Annotated, List
-from fastapi import FastAPI, HTTPException, Depends, status, Request
+from fastapi import FastAPI, HTTPException, Depends, status, Request, WebSocket
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -49,6 +49,5 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse(
-        request=request, name="home.html"
+        request=request, name="index.html"
     )
-    #return {"message": "FastAPI + PostgreSQL are running!"}
