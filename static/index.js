@@ -1,18 +1,20 @@
-console.log(`Hello World`);
-console.log(`Testing 123`);
+/*let fullName = "Ross Hyland";
+//let age = 24;
+let isStudent = false;
 
-document.getElementById("myH1").textContent = `Hello`;
-document.getElementById("myP").textContent = `Testing JavaScript`
-//window.alert(`This is an alert!`);
+let username;
 
-/*
- * This is a comment block
+document.getElementById("mySubmit").onclick = function(){
+  username = document.getElementById("myText").value;
+  document.getElementById("myH1").textContent = `Hello ${username}`
 */
 
-let x = 123;
-let age = 25;
-let price = 9.99;
+document.getElementById("submit").onclick = function(){
+  username = document.getElementById("username").value;
+  email = document.getElementById("email").value;
+  password = document.getElementById("password").value;
 
-console.log(`You are ${25} years old`);
-console.log(`The price is ${price}`);
-console.log(typeof age);
+  console.log(username);
+  console.log(email);
+  console.log(password);
+}
