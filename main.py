@@ -51,3 +51,9 @@ async def root(request: Request):
     return templates.TemplateResponse(
         request=request, name="index.html"
     )
+
+@app.get("/home", response_class=HTMLResponse)
+async def user_homepage(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="userHome.html"
+    )
