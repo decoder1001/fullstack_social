@@ -82,7 +82,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         username: str = payload.get("sub")
         user_id: str = payload.get("id")
         if username is None or user_id is None:
-            raise HTTPExeception(
+            raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Could not validate user"
             )
@@ -90,7 +90,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         return {"username": username, "id": user_id}
 
     except JWTError:
-        raise HTTPExeception(
+        raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate User"
         )
 
@@ -104,7 +104,7 @@ async def login_for_access_token(
     user = authenticate_user(form_data.username, form_data.password, db)
 
     if not user:
-        raise HTTPExeception(
+        raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate User"
         )
     username = user.username
