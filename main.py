@@ -18,6 +18,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
@@ -31,6 +32,14 @@ class UserBase(BaseModel):
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(router)
 app.mount ("/static", StaticFiles(directory="static"), name="static")
 
