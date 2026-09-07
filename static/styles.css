@@ -4,7 +4,7 @@ h1 {
 #Submit{
   font-size: 1em;
 }
-.row{
+.row {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
