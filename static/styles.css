@@ -4,3 +4,16 @@ h1 {
 #Submit{
   font-size: 1em;
 }
+.row{
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.row form {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
