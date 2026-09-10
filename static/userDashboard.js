@@ -1,0 +1,3 @@
+document.getElementbyId("current-user"){
+
+}
