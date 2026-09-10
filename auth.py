@@ -50,6 +50,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     )
     db.add(create_user_model)
     db.commit()
+    db.refresh()
 
 def authenticate_user(username: str, password: str, db):
     """
