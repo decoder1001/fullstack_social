@@ -8,7 +8,16 @@ async function create_user(username, email, password){
   if (!res.ok) throw new Error(await res.text());
 }
 
-//FIX: Can create account without inputing username, email and password.
+async function login_for_access_token(username, password){
+  const res = await fetch('http://localhost:8000/auth/token', {
+    method: "POST",
+    body: new URLSearchParams({username, password}),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const { access_token } = await res.json();
+  return access_token;
+}
+
 document.getElementById("submit").onclick = async function(){
  const username = document.getElementById("username").value;
  const email = document.getElementById("email").value;
@@ -27,9 +36,14 @@ document.getElementById("submit").onclick = async function(){
 document.getElementById("login").onclick = async function(){
   const username = document.getElementById("login-username").value;
   const password = document.getElementById("login-password").value;
-  const status = document.getElementById("login-status").value;
+  const loginstatus = document.getElementById("loginstatus");
 
   try {
-    
+    const token = await login_for_access_token(username, password);
+    loginstatus.textContent = `Logged in.`;
+    console.log(token);
+    window.location.replace("http://localhost:8000/home")
+  } catch (err) {
+    loginstatus.textContent = "Failed: " + err.message;
   }
-}
+};
