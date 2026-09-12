@@ -8,6 +8,7 @@ async function create_user(username, email, password){
   if (!res.ok) throw new Error(await res.text());
 }
 //WARNING: a token is being created before user input login credentials.
+//         a token attempt to be created when clicked anywhere in HTML form field.
 async function login_for_access_token(username, password){
   const res = await fetch('http://localhost:8000/auth/token', {
     method: "POST",
@@ -40,11 +41,12 @@ document.getElementById("login").onclick = async function(){
 
   //TODO: Encrypt user credentials during transit
   //      Make seperate instantes of /home for each user with their info 
-  //      and can't be session hijacked
   try {
     const token = await login_for_access_token(username, password);
+    const auth_cookie = document.cookie = token;
     loginstatus.textContent = `Logged in.`;
-    console.log(token);
+    console.log(auth_cookie);
+    sessionStorage.setItem('token', token);
     window.location.replace("http://localhost:8000/home")
   } catch (err) {
     loginstatus.textContent = "Failed: " + err.message;
