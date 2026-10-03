@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -14,6 +15,7 @@ from database import SessionLocal
 from models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+pages_router = APIRouter(tags=["pages"])
 SECRET_KEY = "5ed825e17bd774e1a962b0d354a75e4df14509016486656649bd7e94ba1ca3d6"
 ALGORITHM = "HS256"
 
@@ -50,7 +52,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     )
     db.add(create_user_model)
     db.commit()
-    db.refresh()
+    #db.refresh(create_user_model)
 
 def authenticate_user(username: str, password: str, db):
     """
@@ -73,32 +75,29 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     encode.update({"exp": expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+def get_current_user(request: Request):
     """
     Decodes the JWT token and retrieves user details.
     Raises an exception if the token invalid or expired.
     """
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithm=[ALGORITHM])
-        username: str = payload.get("sub")
-        user_id: str = payload.get("id")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username, user_id = payload.get("sub"), payload.get("id")
         if username is None or user_id is None:
             raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Could not validate user"
-            )
-
+                    status_code=401, detail="Could not validate user")
         return {"username": username, "id": user_id}
 
     except JWTError:
-        raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate User"
-        )
+        raise HTTPException(status_code=401, detail="Could not validate User")
 
-@router.post("/token", response_model=Token)
+@router.post("/token")
 async def login_for_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency
-):
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
     """
     Authenticates user credentials and returns a JWT token if valid.
     """
@@ -106,10 +105,10 @@ async def login_for_access_token(
 
     if not user:
         raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate User"
+                status_code=401, detail="Could not validate User"
         )
-    username = user.username
-    user_id = user.id
-    token = create_access_token(username, user_id, timedelta(minutes=20))
-
-    return {"access_token": token, "token_type": "bearer"}
+# BUG: First time logging in get an Unauthorized error
+    token = create_access_token(user.username, user.id, timedelta(minutes=20))
+    resp = JSONResponse({"access_token": token, "token_type": "bearer"})
+    resp.set_cookie(key="access_token", value=token, httponly=True, samesite="lax", max_age=1200)
+    return resp
