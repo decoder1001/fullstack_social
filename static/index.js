@@ -41,12 +41,10 @@ document.getElementById("login").onclick = async function(){
 
   //TODO: Encrypt user credentials during transit
   //      Make seperate instantes of /home for each user with their info 
+
   try {
     const token = await login_for_access_token(username, password);
-    const auth_cookie = document.cookie = token;
     loginstatus.textContent = `Logged in.`;
-    console.log(auth_cookie);
-    sessionStorage.setItem('token', token);
     window.location.replace("http://localhost:8000/home")
   } catch (err) {
     loginstatus.textContent = "Failed: " + err.message;
