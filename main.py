@@ -8,12 +8,8 @@
 #       1.2. Message Timestamps
 #   2. Post images
 #   3. Have all posts remain presistant between shutdowns and resets
-# Ability to like and comment on posts
-#   1. Users can like posts
-#   2. Users can comment on posts
-#       2.2. Comment Timestamps
 from typing import Annotated, List
-from fastapi import FastAPI, HTTPException, Depends, status, Request, WebSocket
+from fastapi import FastAPI, HTTPException, Depends, status, Request, WebSocket, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -23,7 +19,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import models
 from database import engine, SessionLocal
-from auth import get_current_user, router
+from auth import get_current_user, router, pages_router
 
 class UserBase(BaseModel):
     username: str
@@ -40,7 +36,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
 app.mount ("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
@@ -60,9 +55,13 @@ async def root(request: Request):
     return templates.TemplateResponse(
         request=request, name="index.html"
     )
-
-@app.get("/home", response_class=HTMLResponse)
-async def user_homepage(request: Request):
+ 
+@pages_router.get("/home", response_class=HTMLResponse)
+async def user_homepage(user: user_dependency, request: Request):
     return templates.TemplateResponse(
-        request=request, name="userHome.html"
+        #request=request, name="userHome.html"
+        request, "userHome.html", {"username": user["username"]}
     )
+
+app.include_router(router)
+app.include_router(pages_router)
