@@ -9,11 +9,20 @@ h1 {
   gap: 2rem;
   flex-wrap: wrap;
 }
-
 .row form {
   flex: 1;
   min-width: 260px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  height: 20px;
+  width: 50%;
+  margin: auto;
 }
