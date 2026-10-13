@@ -18,11 +18,25 @@ h1 {
 }
 .main {
   display: flex;
+  position: fixed;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 2px solid black;
-  height: 20px;
-  width: 50%;
-  margin: auto;
+  height: 5000px;
+  width: 25%;
+  margin-top: 100px;
+  margin-left: 1200px;
+}
+.posting{
+  display: flex;
+  position: fixed;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  height: 90px;
+  width: 25%;
+  margin-top: 5px;
+  margin-left: 1200px;
 }
