@@ -10,11 +10,17 @@
     <h1>Home</h1>
     <p id="current-user">Welcome, {{ username }}</p>
     <div class="posting">
-
+      <form action ="/posts" method="post" id="Posting">
+        <input type="text" name="content" value='' id="content"><br>
+        <button id="post"type="button">Post</button>
+      </form>
+      <p id="status"></p>
     </div>
+
     <main class="main">
 
     </main>
+  <script src="static/userDashboard.js"></script>
   </body>
 </html>
 
