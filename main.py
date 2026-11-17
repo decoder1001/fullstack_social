@@ -1,8 +1,5 @@
 #TODO:
-# User account creation and authentication
-#   3. Account Dashboard (Show previous posts)
 # Post messages, images that remain presistant
-#   1. Post messages
 #       1.1. Message content
 #       1.2. Message Timestamps
 from typing import Annotated, List
